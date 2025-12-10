@@ -1,0 +1,2 @@
+And again there is something else to add:
+* There is minimum six enemies on the screen so when I kill one one spawns if I kill two two spawn. So the same as with score. Kill one enemy = +1 score and enemy
