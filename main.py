@@ -1,16 +1,22 @@
 from pygame.locals import *
+from random import randint
 import pygame
 import sys
 
 pygame.init()
+pygame.font.init()
 
 WIDTH, HEIGHT = 640, 480
 
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Hero vs Boss Arena")
+
+font = pygame.font.SysFont("comicsans", 30)
 
 black = (0, 0, 0)
 white = (255, 255, 255)
+colorkey = (55, 155, 255)
 
 
 class Player:
@@ -37,14 +43,35 @@ class Player:
         pygame.draw.rect(screen, self.color, self.rect)
 
 
+class Coin:
+    def __init__(self):
+        self.img = pygame.image.load("imgs/coin.png")
+        self.img.set_colorkey(colorkey)
+        self.x = randint(0, WIDTH - 25)
+        self.y = randint(0, HEIGHT - 25)
+        self.size = 25
+        self.rect = self.img.get_rect(topleft = (self.x, self.y))
+        self.coin_on_screen = True
+
+    def draw(self):
+        screen.blit(self.img, self.rect)
+
+
 player = Player()
 circle_timer = 0
 CIRCLE_DURATION = 30
 
+coin = Coin()
+coin_score = 0
 
 def main():
+    global coin_score
+    coin_respawn_time = 0
+
     while True:
+        coin_text = font.render(f"Coins: {coin_score}", 1, white)
         screen.fill(black)
+        screen.blit(coin_text, (WIDTH - 10 - coin_text.get_width(), 10))
 
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -54,6 +81,20 @@ def main():
         keys = pygame.key.get_pressed()
         player.move(keys)
         player.draw()
+
+        if coin.coin_on_screen:
+            coin.draw()
+            if player.rect.colliderect(coin.rect):
+                coin.coin_on_screen = False
+                coin_score += 1
+                coin_respawn_time = pygame.time.get_ticks() + 5000
+        else:
+            current_time = pygame.time.get_ticks()
+            if current_time >= coin_respawn_time:
+                coin.coin_on_screen = True
+                coin.x = randint(0, WIDTH - 25)
+                coin.y = randint(0, HEIGHT - 25)
+                coin.rect = coin.img.get_rect(topleft = (coin.x, coin.y))
             
         clock.tick(60)
         pygame.display.update()
