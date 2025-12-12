@@ -6,7 +6,7 @@ import sys
 pygame.init()
 pygame.font.init()
 
-WIDTH, HEIGHT = 640, 480
+WIDTH, HEIGHT = 1300, 700
 
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -15,6 +15,7 @@ pygame.display.set_caption("Hero vs Boss Arena")
 font = pygame.font.SysFont("comicsans", 30)
 
 black = (0, 0, 0)
+green = (0, 255, 0)
 white = (255, 255, 255)
 colorkey = (55, 155, 255)
 
@@ -37,11 +38,19 @@ class Player:
             self.rect.y -= self.speed
         if keys[K_DOWN] or keys[K_s]:
             self.rect.y += self.speed
-        self.rect.clamp_ip(screen.get_rect())
+
+        if self.rect.left < 0:
+            self.rect.left = 0
+        if self.rect.right > WIDTH:
+            self.rect.right = WIDTH
+        if self.rect.top < 67:
+            self.rect.top = 67
+        if self.rect.bottom > HEIGHT:
+            self.rect.bottom = HEIGHT
 
     def draw(self):
         pygame.draw.rect(screen, self.color, self.rect)
-
+        
 
 class Coin:
     def __init__(self):
@@ -72,6 +81,11 @@ def main():
         coin_text = font.render(f"Coins: {coin_score}", 1, white)
         screen.fill(black)
         screen.blit(coin_text, (WIDTH - 10 - coin_text.get_width(), 10))
+
+        start_point = (0, 65)
+        end_point = (WIDTH, 65)
+        line_width = 2
+        pygame.draw.line(screen, green, start_point, end_point, line_width)
 
         for event in pygame.event.get():
             if event.type == QUIT:
