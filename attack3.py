@@ -1,6 +1,5 @@
 from pygame.locals import *
 from random import randint
-from attack3 import main as attack3_main
 import pygame
 import sys
 
@@ -17,14 +16,16 @@ font = pygame.font.SysFont("comicsans", 30)
 
 black = (0, 0, 0)
 green = (0, 255, 0)
+red = (255, 0, 0)
 white = (255, 255, 255)
 colorkey = (55, 155, 255)
+border = (0, 128, 255)
 
-
+# GauntletDeath().x // 2 - 25
 class Player:
     def __init__(self):
-        self.x = WIDTH // 2 - 25
-        self.y = HEIGHT // 2 - 25
+        self.x = WIDTH
+        self.y = HEIGHT
         self.size = 50
         self.speed = 3
         self.color = white
@@ -42,8 +43,8 @@ class Player:
 
         if self.rect.left < 0:
             self.rect.left = 0
-        if self.rect.right > WIDTH:
-            self.rect.right = WIDTH
+        if self.rect.right > WIDTH // 2:
+            self.rect.right = WIDTH // 2 
         if self.rect.top < 67:
             self.rect.top = 67
         if self.rect.bottom > HEIGHT:
@@ -51,41 +52,49 @@ class Player:
 
     def draw(self):
         pygame.draw.rect(screen, self.color, self.rect)
-        
 
-class Coin:
+
+class GauntletDeath:
     def __init__(self):
-        self.img = pygame.image.load("imgs/coin.png")
-        self.img.set_colorkey(colorkey)
-        self.x = randint(0, WIDTH - 25)
-        self.y = randint(67 - 25, HEIGHT - 25)
-        self.size = 25
-        self.rect = self.img.get_rect(topleft = (self.x, self.y))
-        self.coin_on_screen = True
-
+        self.x = WIDTH // 2
+        self.y = HEIGHT // 2
+        self.size = 70
+        self.gauntlet_rect = pygame.Rect(self.x // 2 - 25, self.y, self.size, self.size)
+        self.border_start = (WIDTH // 2, 67)
+        self.border_end = (WIDTH // 2, HEIGHT)
+        self.border_width = 2
+        self.dx = 5
+        self.dy = 20
+    
     def draw(self):
-        screen.blit(self.img, self.rect)
+        pygame.draw.line(screen, border, self.border_start, self.border_end, self.border_width)
+        pygame.draw.rect(screen, red, self.gauntlet_rect)
+
+    def move(self):
+        self.gauntlet_rect.x += self.dx
+        self.gauntlet_rect.y += self.dy
+        
+        if self.gauntlet_rect.right >= WIDTH // 2 or self.gauntlet_rect.left <= 0:
+            self.dx = -self.dx
+        if self.gauntlet_rect.bottom >= HEIGHT or self.gauntlet_rect.top <= 67:
+            self.dy = -self.dy
 
 
 player = Player()
-circle_timer = 0
-CIRCLE_DURATION = 30
+gauntlet = GauntletDeath()
 
-coin = Coin()
-coin_score = 0
 
 def main():
-    global coin_score
-    coin_respawn_time = 0
-
-    while True:
-        coin_text = font.render(f"Coins: {coin_score}", 1, white)
+    start_time = pygame.time.get_ticks()
+    
+    run = True
+    while run:
         screen.fill(black)
-        screen.blit(coin_text, (WIDTH - 10 - coin_text.get_width(), 10))
 
-        if coin_score == 1:
-            attack3_main()
+        # draw the boss
+        pygame.draw.circle(screen, red, (WIDTH * 3 // 4, HEIGHT // 2), 170)
 
+        # draw the top line
         start_point = (0, 65)
         end_point = (WIDTH, 65)
         line_width = 2
@@ -100,22 +109,23 @@ def main():
         player.move(keys)
         player.draw()
 
-        if coin.coin_on_screen:
-            coin.draw()
-            if player.rect.colliderect(coin.rect):
-                coin.coin_on_screen = False
-                coin_score += 1
-                coin_respawn_time = pygame.time.get_ticks() + 5000
-        else:
-            current_time = pygame.time.get_ticks()
-            if current_time >= coin_respawn_time:
-                coin.coin_on_screen = True
-                coin.x = randint(0, WIDTH - 25)
-                coin.y = randint(0, HEIGHT - 25)
-                coin.rect = coin.img.get_rect(topleft = (coin.x, coin.y))
+        gauntlet.draw()
+        gauntlet.move()
+
+        # check if gauntlet collides with player
+        if gauntlet.gauntlet_rect.colliderect(player.rect):
+            print("Collision detected!")
+            run = False
+            
+        # check if 15 seconds have passed
+        if pygame.time.get_ticks() - start_time > 15000:
+            run = False
             
         clock.tick(60)
         pygame.display.update()
+
+    pygame.quit()
+    quit()
 
 
 if __name__ == "__main__":
