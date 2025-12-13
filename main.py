@@ -55,7 +55,7 @@ class Player:
 
 class Coin:
     def __init__(self):
-        self.img = pygame.image.load("imgs/coin.png")
+        self.img = pygame.image.load("data/imgs/coin.png")
         self.img.set_colorkey(colorkey)
         self.x = randint(0, WIDTH - 25)
         self.y = randint(67 - 25, HEIGHT - 25)
@@ -83,6 +83,7 @@ def main():
         screen.fill(black)
         screen.blit(coin_text, (WIDTH - 10 - coin_text.get_width(), 10))
 
+        # FOR TESTING
         if coin_score == 1:
             attack3_main()
 

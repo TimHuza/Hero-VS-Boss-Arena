@@ -1,5 +1,5 @@
 from pygame.locals import *
-from random import randint
+from attack4 import main as attack4_main
 import pygame
 import sys
 
@@ -119,6 +119,7 @@ def main():
             
         # check if 15 seconds have passed
         if pygame.time.get_ticks() - start_time > 15000:
+            attack4_main()
             run = False
             
         clock.tick(60)
