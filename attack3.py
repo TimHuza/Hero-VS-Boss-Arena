@@ -105,6 +105,10 @@ def main():
                 pygame.quit()
                 sys.exit()
 
+        seconds_left = 15 - (pygame.time.get_ticks() - start_time) // 1000
+        timer = pygame.font.SysFont(None, 50).render(str(max(seconds_left, 0)), True, white)
+        screen.blit(timer, (WIDTH // 2, HEIGHT // 65))
+
         keys = pygame.key.get_pressed()
         player.move(keys)
         player.draw()
