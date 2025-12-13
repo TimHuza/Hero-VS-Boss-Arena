@@ -1,6 +1,6 @@
 from pygame.locals import *
 from random import randint
-from attack3 import main as attack3_main
+from attack2 import main as attack2_main
 import pygame
 import sys
 
@@ -26,7 +26,7 @@ class Player:
         self.x = WIDTH // 2 - 25
         self.y = HEIGHT // 2 - 25
         self.size = 50
-        self.speed = 3
+        self.speed = 4
         self.color = white
         self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
 
@@ -85,7 +85,7 @@ def main():
 
         # FOR TESTING
         if coin_score == 1:
-            attack3_main()
+            attack2_main()
 
         start_point = (0, 65)
         end_point = (WIDTH, 65)

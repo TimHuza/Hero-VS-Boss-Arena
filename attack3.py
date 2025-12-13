@@ -27,7 +27,7 @@ class Player:
         self.x = WIDTH
         self.y = HEIGHT
         self.size = 50
-        self.speed = 3
+        self.speed = 4
         self.color = white
         self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
 
