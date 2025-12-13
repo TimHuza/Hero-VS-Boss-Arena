@@ -118,7 +118,6 @@ def main():
 
         # check if gauntlet collides with player
         if gauntlet.gauntlet_rect.colliderect(player.rect):
-            print("Collision detected!")
             run = False
             
         # check if 15 seconds have passed
