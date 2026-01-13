@@ -26,9 +26,7 @@ Or download the ZIP and extract it.
 
 2. **Install Python**
 
-```bash
-pip install pygame
-```
+Go to [Python.org](https://www.python.org/downloads/) and download the latest version of Python.
 
 3. **Check if Python is installed**
 
@@ -192,5 +190,6 @@ pip install pygame
 
 ## Author
 Created as a learning project using Python and Pygame.
+
 
 Enjoy the game! 🎮
